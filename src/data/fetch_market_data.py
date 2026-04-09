@@ -109,7 +109,7 @@ def main() -> None:
     market_data = (pd.concat(all_dfs).sort_values(["Ticker", "Date"]).reset_index(drop=True)    )
     out_path = RAW_DIR / "market_data.csv"
     market_data.to_csv(out_path, index=False)
-    logging.info(f"market_data.csv → {len(market_data)} lignes, {market_data['Ticker'].nunique()} tickers")
+    logging.info(f"market_data.csv → {len(market_data)} lines, {market_data['Ticker'].nunique()} tickers")
 
 
 if __name__ == "__main__":
