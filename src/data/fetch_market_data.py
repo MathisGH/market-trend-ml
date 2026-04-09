@@ -66,12 +66,7 @@ def update_ticker(name: str, symbol: str, file_path: Path) -> pd.DataFrame | Non
         new_df = new_df.reset_index()
         new_df["Ticker"] = name
 
-        updated_df = (
-            pd.concat([old_df, new_df])
-            .drop_duplicates(subset=["Date"])
-            .sort_values("Date")
-            .reset_index(drop=True)
-        )
+        updated_df = (pd.concat([old_df, new_df]).drop_duplicates(subset=["Date"]).sort_values("Date").reset_index(drop=True))
         logging.info(f"[{name}] +{len(new_df)} new lines")
         return updated_df
 
@@ -111,11 +106,7 @@ def main() -> None:
         logging.error("No data fetched — market_data.csv was not created")
         return
 
-    market_data = (
-        pd.concat(all_dfs)
-        .sort_values(["Ticker", "Date"])
-        .reset_index(drop=True)
-    )
+    market_data = (pd.concat(all_dfs).sort_values(["Ticker", "Date"]).reset_index(drop=True)    )
     out_path = RAW_DIR / "market_data.csv"
     market_data.to_csv(out_path, index=False)
     logging.info(f"market_data.csv → {len(market_data)} lignes, {market_data['Ticker'].nunique()} tickers")
