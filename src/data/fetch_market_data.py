@@ -77,7 +77,7 @@ def update_ticker(name: str, symbol: str, file_path: Path) -> pd.DataFrame | Non
 def save_market_data(name: str, df: pd.DataFrame, file_path: Path) -> None:
     """Saving the individual CSV file"""
     df.to_csv(file_path, index=False)
-    logging.info(f"[{name}] Saved → {file_path}")
+    logging.info(f"[{name}] Saved in {file_path}")
 
 
 def main() -> None:
@@ -109,7 +109,7 @@ def main() -> None:
     market_data = (pd.concat(all_dfs).sort_values(["Ticker", "Date"]).reset_index(drop=True)    )
     out_path = RAW_DIR / "market_data.csv"
     market_data.to_csv(out_path, index=False)
-    logging.info(f"market_data.csv → {len(market_data)} lines, {market_data['Ticker'].nunique()} tickers")
+    logging.info(f"market_data.csv : {len(market_data)} lines, {market_data['Ticker'].nunique()} tickers")
 
 
 if __name__ == "__main__":

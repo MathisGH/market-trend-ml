@@ -8,3 +8,4 @@ data/external/
 .DS_Store
 .ipynb_checkpoints
 notebooks/
+logs/
