@@ -9,13 +9,6 @@ RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 
 
-def fetch_fred_series(series_id: str, start: str = "2000-01-01") -> pd.Series:
-    url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
-    df = pd.read_csv(url, parse_dates=["DATE"], index_col="DATE")
-    df = df[df.index >= start]
-    df.columns = [series_id]
-    return df[series_id].replace(".", np.nan).astype(float)
-
 def add_basic_features(file_path: Path) -> pd.DataFrame | None:
     try:
         df = pd.read_csv(file_path, parse_dates=["Date"])
@@ -150,25 +143,7 @@ def add_cross_market_features(df: pd.DataFrame) -> pd.DataFrame:
     except Exception as e:
         logging.error(f"Error in cross-market features: {e}")
         return df
-
-def add_macro_features(df: pd.DataFrame) -> pd.DataFrame:
-    try:
-        yield_curve = fetch_fred_series("T10Y2Y")   # 10Y - 2Y spread
-        
-        macro = pd.DataFrame({
-            "yield_curve_spread": yield_curve,
-        })
-        macro.index.name = "Date"
-        macro = macro.reset_index()
-        
-        df = df.merge(macro, on="Date", how="left")
-        df["yield_curve_spread"] = df["yield_curve_spread"].ffill()
-        
-        logging.info("Macro features added: yield_curve_spread")
-        return df
-    except Exception as e:
-        logging.error(f"Error fetching FRED data: {e}")
-        return None
+    
 
 def main():
 
@@ -185,7 +160,6 @@ def main():
 
     df = add_basic_features(file_path=file_path)
     df = add_cross_market_features(df=df)
-    df = add_macro_features(df=df)
 
     if df is None:
         logging.error("Feature creation failed")
