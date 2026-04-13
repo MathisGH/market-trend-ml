@@ -115,6 +115,7 @@ def add_cross_market_features(df: pd.DataFrame) -> pd.DataFrame:
     try:
         # Pivot to wide format: one column per ticker
         pivot = df.pivot_table(index="Date", columns="Ticker", values="Close")
+        pivot = pivot.ffill() # forward fill (use the last value)
 
         cross = pd.DataFrame(index=pivot.index)
 
