@@ -9,3 +9,4 @@ data/external/
 .ipynb_checkpoints
 notebooks/
 logs/
+models/
