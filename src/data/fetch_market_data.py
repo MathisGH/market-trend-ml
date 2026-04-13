@@ -45,7 +45,7 @@ def download_ticker(name: str, symbol: str) -> pd.DataFrame | None:
         logging.info(f"[{name}] {len(df)} lines downloaded")
         return df
     except Exception as e:
-        logging.error(f"[{name}] Error downloading : {e}")
+        logging.error(f"[{name}] Error downloading: {e}")
         return None
 
 def update_ticker(name: str, symbol: str, file_path: Path) -> pd.DataFrame | None:
@@ -71,7 +71,7 @@ def update_ticker(name: str, symbol: str, file_path: Path) -> pd.DataFrame | Non
         return updated_df
 
     except Exception as e:
-        logging.error(f"[{name}] Error updating : {e}")
+        logging.error(f"[{name}] Error updating: {e}")
         return None
     
 def save_market_data(name: str, df: pd.DataFrame, file_path: Path) -> None:
