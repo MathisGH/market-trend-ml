@@ -24,7 +24,7 @@ FEATURES = [
 def detect_regimes(features_path: Path) -> pd.DataFrame:
     """Apply the HMM model to the data"""
     try:
-        df = pd.read_csv(PROCESSED_DIR / "market_features.csv")
+        df = pd.read_csv(features_path)
 
         hmm = joblib.load(MODEL_DIR / "hmm.pkl")
         scaler = joblib.load(MODEL_DIR / "scaler.pkl")
@@ -48,6 +48,9 @@ def detect_regimes(features_path: Path) -> pd.DataFrame:
 def main():
     logging.basicConfig(level=logging.INFO)
     df = detect_regimes(PROCESSED_DIR / "market_features.csv")
+    if df is None:
+        logging.error("Regime detection failed")
+        return
     df.to_csv(PROCESSED_DIR / "market_regimes.csv", index=False)
     logging.info(f"Regimes saved")
 

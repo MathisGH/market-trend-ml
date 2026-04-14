@@ -108,7 +108,7 @@ def add_basic_features(file_path: Path) -> pd.DataFrame | None:
     
     except Exception as e:
         logging.error(f"Error in basic features: {e}")
-        return df
+        return None
 
 
 def add_cross_market_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -143,7 +143,7 @@ def add_cross_market_features(df: pd.DataFrame) -> pd.DataFrame:
 
     except Exception as e:
         logging.error(f"Error in cross-market features: {e}")
-        return df
+        return None
     
 
 def main():
