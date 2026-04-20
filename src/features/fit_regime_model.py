@@ -43,9 +43,15 @@ def train_hmm_model(data_path: Path) -> None:
         )
         hmm.fit(X)
 
+        sp500["regime"] = hmm.predict(X)
+        regime_vol = sp500.groupby("regime")["volatility_30d"].mean()
+        sorted_regimes = regime_vol.sort_values().index
+        mapping = {int(old):int(new) for new, old in enumerate(sorted_regimes)}
+
         MODEL_DIR.mkdir(parents=True, exist_ok=True)
         joblib.dump(hmm, MODEL_DIR / "hmm.pkl")
         joblib.dump(scaler, MODEL_DIR / "scaler.pkl")
+        joblib.dump(scaler, MODEL_DIR / "regime_mapping.pkl")
 
     except Exception as e:
         logging.error(f"Error training the model: {e}")

@@ -28,12 +28,14 @@ def detect_regimes(features_path: Path) -> pd.DataFrame:
 
         hmm = joblib.load(MODEL_DIR / "hmm.pkl")
         scaler = joblib.load(MODEL_DIR / "scaler.pkl")
+        mapping = joblib.load(MODEL_DIR / "regime_mapping.pkl")
 
         sp500 = df[df["Ticker"] == "SP500"][["Date", "Close"] + FEATURES].copy()
         sp500 = sp500.sort_values("Date").reset_index(drop=True)
         sp500 = sp500.dropna()
 
         sp500["regime"] = hmm.predict(scaler.transform(sp500[FEATURES]))
+        sp500["regime"] = sp500["regime"].map(mapping)
 
         df = df.merge(sp500[["Date", "regime"]], on="Date", how="left")
         

@@ -145,6 +145,26 @@ def add_cross_market_features(df: pd.DataFrame) -> pd.DataFrame:
         logging.error(f"Error in cross-market features: {e}")
         return None
     
+def add_targets(df: pd.DataFrame) -> pd.DataFrame:
+    try:
+        df["target_1d"] = (df.groupby("Ticker")["Close"].shift(-1) > df["Close"]).astype(int) # 1 if "Close" increases the next day, 0 otherwise (show the evolution)
+        df["target_5d"] = (df.groupby("Ticker")["Close"].shift(-5) > df["Close"]).astype(int) # same but for the week
+        df["target_21d"] = (df.groupby("Ticker")["Close"].shift(-21) > df["Close"]).astype(int)
+        df["target_volatility_5d"] = (df.groupby("Ticker")["return"].transform(lambda x: x.shift(-5).rolling(5).std()))
+        df["target_volatility_21d"] = (df.groupby("Ticker")["return"].transform(lambda x: x.shift(-21).rolling(21).std()))
+        df["evolution_1d"] = (df.groupby("Ticker")["Close"].shift(-1) / df["Close"]) - 1
+        df["evolution_5d"] = (df.groupby("Ticker")["Close"].shift(-5) / df["Close"]) - 1
+        df["evolution_21d"] = (df.groupby("Ticker")["Close"].shift(-21) / df["Close"]) - 1
+
+        # Later -->
+        # target_regime_5d, 10d etc
+
+        return df
+    
+    except Exception as e:
+        logging.error(f"Error when adding the targets: {e}")
+        return None
+
 
 def main():
 
@@ -161,6 +181,7 @@ def main():
 
     df = add_basic_features(file_path=file_path)
     df = add_cross_market_features(df=df)
+    df = add_targets(df=df)
 
     if df is None:
         logging.error("Feature creation failed")
