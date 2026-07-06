@@ -174,7 +174,7 @@ def main():
     file_path = RAW_DIR / "market_data.csv"
 
     if not file_path.exists():
-        logging.error("market_data.csv not found")
+        logging.error("market_data_with_features.csv not found")
         return
 
     logging.info("Creating features")
@@ -182,12 +182,13 @@ def main():
     df = add_basic_features(file_path=file_path)
     df = add_cross_market_features(df=df)
     df = add_targets(df=df)
+    df = df.dropna() # à check si faut le laisser ici ou non
 
     if df is None:
         logging.error("Feature creation failed")
         return
 
-    output_path = PROCESSED_DIR / "market_features.csv"
+    output_path = PROCESSED_DIR / "market_data_with_features.csv"
 
     df.to_csv(output_path, index=False)
 

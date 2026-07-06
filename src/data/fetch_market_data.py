@@ -1,3 +1,9 @@
+#############################################################################
+###  Initial download + incremental update via yfinance for every tickers ###
+### Data for each ticker is saved in a separate file (in raw/...) and the ###
+###         combined dataset is saved as 'raw/market_data.csv'            ###
+#############################################################################
+
 import yfinance as yf
 import pandas as pd
 import os

@@ -51,7 +51,7 @@ def train_hmm_model(data_path: Path) -> None:
         MODEL_DIR.mkdir(parents=True, exist_ok=True)
         joblib.dump(hmm, MODEL_DIR / "hmm.pkl")
         joblib.dump(scaler, MODEL_DIR / "scaler.pkl")
-        joblib.dump(scaler, MODEL_DIR / "regime_mapping.pkl")
+        joblib.dump(mapping, MODEL_DIR / "regime_mapping.pkl")
 
     except Exception as e:
         logging.error(f"Error training the model: {e}")
@@ -60,7 +60,7 @@ def train_hmm_model(data_path: Path) -> None:
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    train_hmm_model(PROCESSED_DIR / "market_features.csv")
+    train_hmm_model(PROCESSED_DIR / "market_data_with_features.csv")
     logging.info(f"HMM model saved in {MODEL_DIR}")
 
 

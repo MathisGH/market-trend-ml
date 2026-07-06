@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from hmmlearn.hmm import GaussianHMM
+from sklearn.preprocessing import StandardScaler
 import logging
 from pathlib import Path
 import joblib
@@ -38,6 +39,7 @@ def detect_regimes(features_path: Path) -> pd.DataFrame:
         sp500["regime"] = sp500["regime"].map(mapping)
 
         df = df.merge(sp500[["Date", "regime"]], on="Date", how="left")
+        df["regime"] = df["regime"].ffill() # Avoid NaN in "regime"
         
         return df
     
@@ -46,14 +48,13 @@ def detect_regimes(features_path: Path) -> pd.DataFrame:
         return None
     
 
-
 def main():
     logging.basicConfig(level=logging.INFO)
-    df = detect_regimes(PROCESSED_DIR / "market_features.csv")
+    df = detect_regimes(PROCESSED_DIR / "market_data_with_features.csv")
     if df is None:
         logging.error("Regime detection failed")
         return
-    df.to_csv(PROCESSED_DIR / "market_regimes.csv", index=False)
+    df.to_csv(PROCESSED_DIR / "market_data_with_regimes.csv", index=False)
     logging.info(f"Regimes saved")
 
 
